@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Dispatch, SetStateAction } from 'react';
-import { TextField, Button } from '@mui/material';
-import Game from './Game';
-import Login from './Login';
-
+import Game from './views/Game';
+import Login from './views/Login';
+import Register from './views/Register';
 
 /*
    BIG EXERCISE:  Implement JSX-koodia and logic into this file so that this component displays a
@@ -70,11 +69,11 @@ function confirmSession(j : any)
 	}
 }
 
-function showError(e : any)
+function showError(e : any, view:string)
 {
 	alert("Whoops... communication with the server did not work out... or the JSON has some weirdness in it... Check out the console.");
 	console.log(e);
-	viewSetter("login");
+	viewSetter(view);
 }
 
 function getSession(event : any, m: string, p: string, c : any)
@@ -83,15 +82,16 @@ function getSession(event : any, m: string, p: string, c : any)
  	fetch(c.serviceroot+c.login, { method : "POST", mode : "cors", credentials : "include", 
                                              headers: {'Content-Type': 'text/plain'}, 
                                              body : JSON.stringify(obu) }).
-	then( r => r.json() ).then( j => confirmSession(j) ).catch( e => showError(e));
+	then( r => r.json() ).then( j => confirmSession(j) ).catch( e => showError(e,'login'));
 }
-
-function logout()
-{
-	//EXERCISE 3:  This is not enough! The server side needs to be contacted to reset the uid in the session there too!
-	//	       If you don't do that the next person sitting in front of the same browser will get to play another users'
-        //             games! But before you get there you need to add a "logout"-button to the top-/sidebar you've added?!-)
-	viewSetter("login");
+const register = (event:any, mail:string, pass: string, config:any) => {
+	let userCred = { email: mail, pass: pass}
+	console.log(userCred);
+	
+	fetch(config.serviceroot+config.register, { method : "POST", mode : "cors", credentials : "include", 
+												headers: {'Content-Type': 'text/plain'}, 
+												body : JSON.stringify(userCred) }).
+	then( r => r.json() ).then( j => confirmSession(j) ).catch( e => showError(e,'register'));
 }
 
 
@@ -102,20 +102,17 @@ function TicTacToe(props : any)
 	let [view, setView] = React.useState(props.view);
 	viewSetter = setView;
 
-	let email : string = "";
-	const emailChangeHandler = (inpMail:string) => email=inpMail
-
-	if (view === "game") 
-		ret = <Game key={view} sizex={5} sizey={5} config={config} userEmail={email} />;
-	else 
-		ret = <Login key={view} config={config} getSession={getSession} userEmail={email} emailChangeHandler={emailChangeHandler}/>;
+	let [userEmail,setUserEmail] = useState('') 
+	const emailChangeHandler = (email:string) => setUserEmail(email)
+	
+	switch (view) {
+		case ('game'): ret = <Game key={view} sizex={5} sizey={5} config={config} userEmail={userEmail} viewSetter={viewSetter}/>; break;
+		case ('register'): ret = <Register key={view} config={config} register={register} userEmail={userEmail} emailChangeHandler={emailChangeHandler} viewSetter={viewSetter}/>; break;
+		default: ret = <Login key={view} config={config} getSession={getSession} userEmail={userEmail} emailChangeHandler={emailChangeHandler} viewSetter={viewSetter}/>; break;
+		
+	}
 	return ret;
 }
-
-
-
-
-//Look how it's done with Game.tsx and move this Login-code into it's own file in exercise 2
 
 
 

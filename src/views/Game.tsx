@@ -1,6 +1,6 @@
 import React from 'react';
-import { Grid, Checkbox, Box } from '@mui/material';
-import TopBar from './TopBar';
+import { Checkbox, Box } from '@mui/material';
+import TopBar from '../TopBar';
 
 function showError(e : any)
 {
@@ -18,7 +18,7 @@ function sendMove(mx: number, my: number, c: any)
 	fetch(c.serviceroot+c.receiver, { method : "POST", mode : "cors", credentials : "include", 
 							headers: {'Content-Type': 'text/plain'}, 
 							body : JSON.stringify(obj) }).
-								then( r => r.json() ).then( j => handleMove(j) ).catch( e => showError(e));
+							then( r => r.json() ).then( j => handleMove(j) ).catch( e => showError(e));
 }
 
 function Game(props : any) {
@@ -35,7 +35,7 @@ function Game(props : any) {
   }
   return(
   <Box>
-    <TopBar logged={true} userEmail={props.userEmail}/>
+    <TopBar logged={true} userEmail={props.userEmail} config={config} viewSetter={props.viewSetter}/>
     <table>
       <tbody>
         {rows}
