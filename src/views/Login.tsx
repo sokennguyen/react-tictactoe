@@ -7,7 +7,6 @@ function Login(props : any)
 	let pass : string = "";
 	return(
     <Box>
-        <TopBar logged={false} userEmail={props.email} config={props.config} viewSetter={props.viewSetter}></TopBar>
         <Box
             sx={{
                 display:"flex",

@@ -35,7 +35,6 @@ function Game(props : any) {
   }
   return(
   <Box>
-    <TopBar logged={true} userEmail={props.userEmail} config={config} viewSetter={props.viewSetter}/>
     <table>
       <tbody>
         {rows}

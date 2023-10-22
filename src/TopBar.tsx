@@ -1,12 +1,6 @@
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material"
 
-const TopBar = ({logged,userEmail,config,viewSetter}: {logged:boolean,userEmail:string,config:any,viewSetter:Function}) => {
-    const Logout = (config:any) => {
-        console.log(config.logout);
-        
-        fetch(config.serviceroot+config.logout,{method : "GET", mode : "cors"})
-        viewSetter('login')
-    }
+const TopBar = ({logged,userEmail,config,viewSetter,logout}: {logged:boolean,userEmail:string,config:any,viewSetter:Function,logout:Function}) => {
     return (
         <Box sx={{flexGrow:1}} mb={2}>
             <AppBar position="static">
@@ -19,7 +13,7 @@ const TopBar = ({logged,userEmail,config,viewSetter}: {logged:boolean,userEmail:
                             <Typography variant="h6" ml={3} mr={3} sx={{flexGrow:0}}>
                                 Logged In As "{userEmail}"
                             </Typography>
-                            <Button color="inherit" variant="outlined" onClick={()=>Logout(config)}>Logout</Button>
+                            <Button color="inherit" variant="outlined" onClick={()=>logout(config)}>Logout</Button>
                         </> 
                         : <Typography>
                             Not Logged In

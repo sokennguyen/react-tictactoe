@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction } from 'react';
 import Game from './views/Game';
 import Login from './views/Login';
 import Register from './views/Register';
+import TopBar from './TopBar';
 
 /*
    BIG EXERCISE:  Implement JSX-koodia and logic into this file so that this component displays a
@@ -54,6 +55,7 @@ import Register from './views/Register';
 
 
 let viewSetter : Dispatch<SetStateAction<any>>;
+let logged : boolean = false
 
 function confirmSession(j : any)
 {
@@ -61,6 +63,7 @@ function confirmSession(j : any)
 	if (j.success)
 	{
 		viewSetter("game");
+		logged=true
 	}
 	else 
 	{
@@ -93,7 +96,11 @@ const register = (event:any, mail:string, pass: string, config:any) => {
 												body : JSON.stringify(userCred) }).
 	then( r => r.json() ).then( j => confirmSession(j) ).catch( e => showError(e,'register'));
 }
-
+const Logout = (config:any) => {	
+	fetch(config.serviceroot+config.logout,{method : "GET", mode : "cors"})
+	logged=false
+	viewSetter('login')
+}
 
 function TicTacToe(props : any) 
 {
@@ -106,12 +113,15 @@ function TicTacToe(props : any)
 	const emailChangeHandler = (email:string) => setUserEmail(email)
 	
 	switch (view) {
-		case ('game'): ret = <Game key={view} sizex={5} sizey={5} config={config} userEmail={userEmail} viewSetter={viewSetter}/>; break;
-		case ('register'): ret = <Register key={view} config={config} register={register} userEmail={userEmail} emailChangeHandler={emailChangeHandler} viewSetter={viewSetter}/>; break;
-		default: ret = <Login key={view} config={config} getSession={getSession} userEmail={userEmail} emailChangeHandler={emailChangeHandler} viewSetter={viewSetter}/>; break;
-		
+		case ('game'): ret = <Game key={view} sizex={5} sizey={5} config={config} />;break;
+		case ('register'): ret = <Register key={view} config={config} register={register} userEmail={userEmail} viewSetter={viewSetter} emailChangeHandler={emailChangeHandler}/>; break;
+		default: ret = <Login key={view} config={config} getSession={getSession} userEmail={userEmail} viewSetter={viewSetter} emailChangeHandler={emailChangeHandler}/>
 	}
-	return ret;
+
+	return <>
+			<TopBar logged={logged} userEmail={userEmail} config={config} viewSetter={viewSetter} logout={Logout}></TopBar>
+			{ret}
+		</>
 }
 
 
