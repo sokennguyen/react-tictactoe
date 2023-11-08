@@ -113,7 +113,7 @@ function TicTacToe(props : any)
 	const emailChangeHandler = (email:string) => setUserEmail(email)
 	
 	switch (view) {
-		case ('game'): ret = <Game key={view} sizex={5} sizey={5} config={config} />;break;
+		case ('game'): ret = <Game key={view} sizex={10} sizey={5} config={config} />;break;
 		case ('register'): ret = <Register key={view} config={config} register={register} userEmail={userEmail} viewSetter={viewSetter} emailChangeHandler={emailChangeHandler}/>; break;
 		default: ret = <Login key={view} config={config} getSession={getSession} userEmail={userEmail} viewSetter={viewSetter} emailChangeHandler={emailChangeHandler}/>
 	}

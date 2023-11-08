@@ -1,6 +1,5 @@
-import React from 'react';
 import { Checkbox, Box } from '@mui/material';
-import TopBar from '../TopBar';
+import { useRef, useEffect } from 'react';
 
 function showError(e : any)
 {
@@ -20,28 +19,90 @@ function sendMove(mx: number, my: number, c: any)
 							body : JSON.stringify(obj) }).
 							then( r => r.json() ).then( j => handleMove(j) ).catch( e => showError(e));
 }
+function calcBoardShorterLength(largerLength:number, x:number, y:number){
+    if (x>y) return largerLength-largerLength/y
+    if (y>x) return largerLength-largerLength/x
+    return largerLength
+}
+function drawGameBoard(canvas:CanvasRenderingContext2D, 
+                        ycount: number,
+                        xcount: number,
+                        sizey: number,
+                        sizex: number
+                    ){
+    console.log(sizey)
+    const strokeWidth = 5
+    canvas.lineWidth = strokeWidth;
+    let yBoxSize = (sizey - strokeWidth*(ycount+1))/ycount
+    let xBoxSize = (sizex - strokeWidth*(xcount+1))/xcount
+    let currentPx = strokeWidth+yBoxSize;
+    for (let y = 1; y < ycount ; y++){
+        canvas.beginPath();
+        canvas.moveTo(0,currentPx);
+        canvas.lineTo(sizex,currentPx);
+        canvas.closePath()
+        canvas.stroke()
+        currentPx = (y+2)*strokeWidth+(y+1)*yBoxSize;
+    }
+    currentPx = strokeWidth+xBoxSize;
+    for (let x = 1; x < xcount ; x++){
+        canvas.beginPath();
+        canvas.moveTo(currentPx,0);
+        canvas.lineTo(currentPx,sizey);
+        canvas.closePath()
+        canvas.stroke()
+        currentPx = (x+2)*strokeWidth+(x+1)*xBoxSize;
+    }
+}
 
 function Game(props : any) {
-  let rows = [];
-  let config = props.config;
-  for (let y = 0; y < props.sizey; y++)
-  {
-    let cols = [];
-    for (let x = 0; x < props.sizex; x++)
-    {
-	cols.push(<td key={"cell"+x+y}><Checkbox onClick={() => sendMove(x,y,config)}/></td>);
+    const canvas = useRef();
+    let sizey:number, sizex:number;
+    useEffect(() => {
+        if (canvas.current){
+            const ctx = (canvas.current as any).getContext('2d');
+            drawGameBoard(
+                ctx,
+                props.sizey,
+                props.sizex,
+                sizey,
+                sizex
+            )
+        } else alert('error creating canvas')
+    })
+    if (props.sizex>props.sizey) {
+        sizey=calcBoardShorterLength(
+                            window.innerWidth,
+                            props.sizex,
+                            props.sizey
+                        );
+        sizex=window.innerWidth;
+        return(
+            <Box>
+                <canvas id='test'
+                        width={sizex} 
+                        height={sizey}
+                        ref={canvas as any}/>
+            </Box>
+        )
     }
-    rows.push(<tr key={"row"+y}>{cols}</tr>);
-  }
-  return(
-  <Box>
-    <table>
-      <tbody>
-        {rows}
-      </tbody>
-    </table>
-  </Box>
-  )
+    else {
+        sizex=calcBoardShorterLength(
+                            window.innerWidth,
+                            props.sizex,
+                            props.sizey
+                        );
+        sizey=window.innerWidth;
+        return(
+            <Box>
+                <canvas id='test'
+                        height={sizey}
+                        width={sizex}
+                        ref={canvas as any}/>
+
+            </Box>
+        )
+    }
 }
 
 export default Game;
