@@ -1,3 +1,4 @@
+import Lobby from './views/Lobby';
 import React, { useState } from 'react';
 import { Dispatch, SetStateAction } from 'react';
 import Game from './views/Game';
@@ -113,7 +114,8 @@ function TicTacToe(props : any)
 	const emailChangeHandler = (email:string) => setUserEmail(email)
 	
 	switch (view) {
-		case ('game'): ret = <Game key={view} sizex={10} sizey={10} config={config} />;break;
+		//case ('game'): ret = <Game key={view} sizex={10} sizey={10} config={config} />;break;
+		case ('game'): ret = <Lobby key={view} config={config}/>;break;
 		case ('register'): ret = <Register key={view} config={config} register={register} userEmail={userEmail} viewSetter={viewSetter} emailChangeHandler={emailChangeHandler}/>; break;
 		default: ret = <Login key={view} config={config} getSession={getSession} userEmail={userEmail} viewSetter={viewSetter} emailChangeHandler={emailChangeHandler}/>
 	}

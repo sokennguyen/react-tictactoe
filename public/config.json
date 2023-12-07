@@ -4,6 +4,6 @@
 	"login":"/login.php",
 	"register":"/register.php",
 	"logout":"/logout.php",
-	"receiver":"/receive.php",
+	"receive":"/receive.php",
 	"serviceroot":"http://127.0.0.1:80"
 }
