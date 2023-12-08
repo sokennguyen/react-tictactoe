@@ -63,7 +63,7 @@ function confirmSession(j : any)
 
 	if (j.success)
 	{
-		viewSetter("game");
+		viewSetter("lobby");
 		logged=true
 	}
 	else 
@@ -98,7 +98,7 @@ const register = (event:any, mail:string, pass: string, config:any) => {
 	then( r => r.json() ).then( j => confirmSession(j) ).catch( e => showError(e,'register'));
 }
 const Logout = (config:any) => {	
-	fetch(config.serviceroot+config.logout,{method : "GET", mode : "cors"})
+	fetch(config.serviceroot+config.logout,{method : "GET", mode : "cors",credentials : "include",})
 	logged=false
 	viewSetter('login')
 }
@@ -114,8 +114,8 @@ function TicTacToe(props : any)
 	const emailChangeHandler = (email:string) => setUserEmail(email)
 	
 	switch (view) {
-		//case ('game'): ret = <Game key={view} sizex={10} sizey={10} config={config} />;break;
-		case ('game'): ret = <Lobby key={view} config={config}/>;break;
+		case ('game'): ret = <Game key={view} sizex={10} sizey={10} config={config} />;break;
+		case ('lobby'): ret = <Lobby key={view} config={config} userEmail={userEmail} logout={Logout} viewSetter={viewSetter}/>;break;
 		case ('register'): ret = <Register key={view} config={config} register={register} userEmail={userEmail} viewSetter={viewSetter} emailChangeHandler={emailChangeHandler}/>; break;
 		default: ret = <Login key={view} config={config} getSession={getSession} userEmail={userEmail} viewSetter={viewSetter} emailChangeHandler={emailChangeHandler}/>
 	}
